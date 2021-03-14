@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 10px;
+  background-color: #FFFFFF;
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 1);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+
+button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+.checked {
+  color: orange;
+}
+
+body {
+    text-align: center;
+}
+form {
+    display: inline-block;
+}
+
+a:link, a:visited {
+  background-color: white;
+  color: black;
+  border: 2px solid green;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button {
+  background-color: white;
+  color: black;
+  border: 2px solid orange;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button:hover {
+  background-color: orange;
+  color: white;}
+
+a:hover, a:active {
+  background-color: green;
+  color: white;
+}
+</style>
+</head>
+<body>
+  <div class="form">
+    User: <input type="text" id="user"/>
+    <button class="button" onclick="change_user()">Login</button>
+  </div>
+  <div class="form">
+    Current User: {{user_name}}
+  </div>
+  <br>
+  <div class="form">
+    <a href="/rated_movies/{{user_name}}">Movies</a>
+    <a href="/recommended_movies/{{user_name}}">Recommended</a>
+  </div>
+  <div id="grid" class="grid-container">
+    {% for movie in movie_info %}
+      <div id={{movie}}>
+        <img alt="No poster available" src={{ movie_info[movie]["poster_link"] }}>
+        <br>
+        {{ movie_info[movie]["title"] }} {{ movie_info[movie]["year"] }}
+      </div>
+    {% endfor %}
+  </div>
+<script>
+  function change_user() {
+    window.location.href = `/recommended_movies/${document.getElementById("user").value}`
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 10px;
+  background-color: #FFFFFF;
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 1);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+
+button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+.checked {
+  color: orange;
+}
+
+body {
+    text-align: center;
+}
+form {
+    display: inline-block;
+}
+
+a:link, a:visited {
+  background-color: white;
+  color: black;
+  border: 2px solid green;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button {
+  background-color: white;
+  color: black;
+  border: 2px solid orange;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button:hover {
+  background-color: orange;
+  color: white;}
+
+a:hover, a:active {
+  background-color: green;
+  color: white;
+}
+</style>
+</head>
+<body>
+  <div class="form">
+    User: <input type="text" id="user"/>
+    <button class="button" onclick="change_user()">Login</button>
+  </div>
+  <div class="form">
+    Current User: {{user_name}}
+  </div>
+  <br>
+  <div class="form">
+    <a href="/rated_movies/{{user_name}}">Movies</a>
+    <a href="/recommended_movies/{{user_name}}">Recommended</a>
+  </div>
+  <div id="grid" class="grid-container">
+    {% for movie in movie_info %}
+      <div id={{movie}}>
+        <img alt="No poster available" src={{ movie_info[movie]["poster_link"] }}>
+        <br>
+        {{ movie_info[movie]["title"] }} {{ movie_info[movie]["year"] }}
+        <br>
+        <button id="{{movie}}1"  class="fa fa-star" onclick='rate_movie("{{movie}}", 1)'></button>
+        <button id="{{movie}}2"  class="fa fa-star" onclick='rate_movie("{{movie}}", 2)'></button>
+        <button id="{{movie}}3"  class="fa fa-star" onclick='rate_movie("{{movie}}", 3)'></button>
+        <button id="{{movie}}4"  class="fa fa-star" onclick='rate_movie("{{movie}}", 4)'></button>
+        <button id="{{movie}}5"  class="fa fa-star" onclick='rate_movie("{{movie}}", 5)'></button>
+        <button id="{{movie}}6"  class="fa fa-star" onclick='rate_movie("{{movie}}", 6)'></button>
+        <button id="{{movie}}7"  class="fa fa-star" onclick='rate_movie("{{movie}}", 7)'></button>
+        <button id="{{movie}}8"  class="fa fa-star" onclick='rate_movie("{{movie}}", 8)'></button>
+        <button id="{{movie}}9"  class="fa fa-star" onclick='rate_movie("{{movie}}", 9)'></button>
+        <button id="{{movie}}10" class="fa fa-star" onclick='rate_movie("{{movie}}", 10)'></button>
+      </div>
+    {% endfor %}
+  </div>
+
+<script>
+  const request = new Request('https://google.com')['url'];
+
+  console.log(window.location.host)
+
+  var users_ratings = JSON.parse('{{users_ratings}}'.replaceAll('&#39;', '"'))
+
+  for (const link in users_ratings["{{user_name}}"]){
+    for (i=1; i<=10; i++){
+      if (i<=users_ratings["{{user_name}}"][link]){
+        document.getElementById(`${link}${i}`).classList = "fa fa-star checked"
+      } else {
+        document.getElementById(`${link}${i}`).classList = "fa fa-star"
+      }
+    }
+  }
+
+  if (!("{{user_name}}" in users_ratings)) {
+    users_ratings["{{user_name}}"] = {}
+  }
+
+  function change_user() {
+    window.location.href = `/rated_movies/${document.getElementById("user").value}`
+  }
+
+  function rate_movie(link, rating) {
+    users_ratings["{{user_name}}"][link] = rating
+
+    for (i=1; i<=10; i++){
+      if (i<=rating){
+        document.getElementById(`${link}${i}`).classList = "fa fa-star checked"
+      } else {
+        document.getElementById(`${link}${i}`).classList = "fa fa-star"
+      }
+    }
+
+    fetch(`http://${window.location.host}/rate`, {
+      method: 'POST',
+      body: JSON.stringify(users_ratings),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    }).then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    }).catch(function (error) {
+      console.warn('Something went wrong.', error);
+    });
+  }
+</script>
+</body>
+</html>

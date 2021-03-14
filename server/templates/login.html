@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    text-align: center;
+}
+form {
+    display: inline-block;
+}
+
+button {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.button {
+  background-color: white;
+  color: black;
+  border: 2px solid orange;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button:hover {
+  background-color: orange;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+  <div class="form">
+    User: <input type="text" id="user"/>
+    <button class="button" onclick="change_user()">Login</button>
+  </div>
+
+  <script>
+    function change_user() {
+      var user_name = document.getElementById("user").value
+
+      window.location.href = `/rated_movies/${user_name}`
+    }
+  </script>
+</body>
+</html>
